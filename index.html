@@ -43,7 +43,7 @@
                 <td>×</td>
                 <td><input v-model="n" type="number" min="1"></td>
             </tr>
-            <tr>
+            <tr v-if="!incomplete">
                 <td>Box size:</td>
                 <td><input id="bw" v-model="bw" v-bind:disabled="(finishedH && !bw) || fbw" type="number" min="0.1"></td>
                 <td>×</td>
@@ -51,13 +51,13 @@
                 <td><small>cm</small></td>
                 <td><span><input v-model="ratio" type="checkbox">Use ratio</span></td>
             </tr>
-            <tr v-if="ratio">
+            <tr v-if="ratio && !incomplete">
                 <td>Box ratio:</td>
                 <td><input v-model="rw" type="number" min="0.1" step="0.1"></td>
                 <td>/</td>
                 <td><input v-model="rh" type="number" min="0.1" step="0.1"></td>
             </tr>
-            <tr>
+            <tr v-if="!incomplete">
                 <td>Box margin:</td>
                 <td><input id="mh" v-model="mh" v-bind:disabled="finishedH && !mh" type="number" min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
@@ -65,7 +65,7 @@
                 <td><small>cm</small></td>
                 <td><span><input v-model="padding" type="checkbox">Sheet padding</span></td>
             </tr>
-            <tr v-if="padding">
+            <tr v-if="padding && !incomplete">
                 <td>Sheet padding:</td>
                 <td><input id="ph" v-model="ph" v-bind:disabled="finishedH && !ph" type="number" min="0.1"></td>
                 <td><small>cm</small></td>
@@ -77,6 +77,8 @@
                 <td><button v-on:click="reset">Reset</button></td>
             </tr>
         </table>
+        <br>
+        <canvas id="preview"></canvas>
         <br>
         <small><a href="https://twitter.com/_klemek" target="_blank">@Klemek</a> - <a href="" target="_blank">Github Repository</a> - 2019</small>
     </main>
