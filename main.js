@@ -126,8 +126,6 @@ let app = {
       this.finishedH = false;
       this.finishedV = false;
       this.incomplete = false;
-      this.fbw = false;
-      this.fbh = false;
       ['sw', 'sh', 'm', 'n', 'bw', 'bh', 'rw', 'rh', 'mh', 'mv', 'ph', 'pv'].forEach(name => {
         if (self[name]) {
           Vue.set(self, name, parseFloat(self[name]));
@@ -137,14 +135,26 @@ let app = {
         this.incomplete = true;
       } else {
         if (this.ratio && this.rw && this.rh) {
-          if (this.bh && !this.fbw) {
-            this.fbw = true;
-            this.bw = utils.round(this.bh * this.rw / this.rh, 2);
+          if (!this.fbw && !this.fbh) {
+            if (this.bh) {
+              this.fbw = true;
+              this.bw = utils.round(this.bh * this.rw / this.rh, 2);
+            } else if (this.bw) {
+              this.fbh = true;
+              this.bh = utils.round(this.bw * this.rh / this.rw, 2);
+            }
+          } else {
+            if (this.fbw && !this.bh) {
+              this.fbw = false;
+              this.bw = undefined;
+            } else if (this.fbh && !this.bw) {
+              this.fbh = false;
+              this.bh = undefined;
+            }
           }
-          if (this.bw && !this.fbh) {
-            this.fbh = true;
-            this.bh = utils.round(this.bw * this.rh / this.rw, 2);
-          }
+        } else {
+          this.fbw = false;
+          this.fbh = false;
         }
         if (this.padding) {
           const uh = !this.bw + !this.mh + !this.ph;
