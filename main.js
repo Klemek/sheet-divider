@@ -68,7 +68,7 @@ let app = {
     focused: undefined,
     //inputs
     sw: 21, sh: 29.7, //sheet size
-    m: 1, n: 1, //boxes //TODO undefined
+    m: undefined, n: undefined, //boxes
     bw: undefined, bh: undefined, //box size
     rw: undefined, rh: undefined, //box ratio
     mh: undefined, mv: undefined, //margin
@@ -113,9 +113,13 @@ let app = {
     pv: 'refreshValues',
   },
   methods: {
-    setFocus: function (name) {
+    'resetFocus': function () {
+      this.focused = undefined;
+      this.refreshValues();
+    },
+    'setFocus': function (name) {
       this.focused = name;
-      this.redraw();
+      this.refreshValues();
     },
     refreshValues: function () {
       const self = this;
@@ -192,7 +196,7 @@ let app = {
           }
         }
       }
-      setTimeout(this.redraw);
+      setTimeout(this.redraw, 10);
     },
     setFinalValue: function (n, v) {
       v = utils.round(v, 2);
@@ -222,7 +226,62 @@ let app = {
         this.preview.style.height = `${height}px`;
 
         const ctx = this.preview.getContext('2d');
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.clearRect(0, 0, width, height);
+
+        ctx.lineWidth = 2;
+
+        const m = this.m || 1;
+        const n = this.n || 1;
+        const bw = this.finishedH ? width * (this.getFinalValue('bw') / this.sw) : width / m;
+        const bh = this.finishedV ? height * (this.getFinalValue('bh') / this.sh) : height / n;
+        const mh = this.finishedH ? width * (this.getFinalValue('mh') / this.sw) : 0;
+        const mv = this.finishedV ? height * (this.getFinalValue('mv') / this.sh) : 0;
+        const ph = this.finishedH ? (this.padding ? width * (this.getFinalValue('ph') / this.sw) : mh) : 0;
+        const pv = this.finishedV ? (this.padding ? height * (this.getFinalValue('pv') / this.sh) : mv) : 0;
+
+        for (let x = 0; x < m + 1; x++) {
+          for (let y = 0; y < n + 1; y++) {
+            ctx.strokeStyle = '#c62828';
+            if (this.focused === 'rw' || this.focused === 'rh') {
+              ctx.beginPath();
+              ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y);
+              ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y + bh);
+              ctx.stroke();
+            }
+            if (this.focused === 'ph' && (x === 0 || x === m) || this.focused === 'mh' && (!(x === 0 || x === m) || !this.padding)) {
+              ctx.beginPath();
+              ctx.moveTo(ph + (bw + mh) * (x - 1) + bw, pv + (bh + mv) * y + bh / 2);
+              ctx.lineTo(ph + (bw + mh) * x, pv + (bh + mv) * y + bh / 2);
+              ctx.stroke();
+            }
+            if (this.focused === 'pv' && (y === 0 || y === n) || this.focused === 'mv' && (!(y === 0 || y === n) || !this.padding)) {
+              ctx.beginPath();
+              ctx.moveTo(ph + (bw + mh) * x + bw / 2, pv + (bh + mv) * (y - 1) + bh);
+              ctx.lineTo(ph + (bw + mh) * x + bw / 2, pv + (bh + mv) * y);
+              ctx.stroke();
+            }
+
+            if (x < m && y < n) {
+              ctx.strokeStyle = (this.focused === 'bw' || this.focused === 'm' || this.focused === 'n') ? '#c62828' : '#424242';
+              ctx.beginPath();
+              ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y);
+              ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y);
+              ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y + bh);
+              ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y + bh);
+              ctx.stroke();
+
+              ctx.strokeStyle = (this.focused === 'bh' || this.focused === 'm' || this.focused === 'n') ? '#c62828' : '#424242';
+              ctx.beginPath();
+              ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y);
+              ctx.lineTo(ph + (bw + mh) * x, pv + (bh + mv) * y + bh);
+              ctx.moveTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y);
+              ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y + bh);
+              ctx.stroke();
+            }
+          }
+        }
 
         ctx.lineWidth = 4;
         ctx.strokeStyle = (this.focused === 'sw' || this.focused === 'sheet') ? '#c62828' : '#424242';
@@ -240,24 +299,6 @@ let app = {
         ctx.moveTo(width - 2, 1);
         ctx.lineTo(width - 2, height - 2);
         ctx.stroke();
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#424242';
-
-        const m = this.m || 1;
-        const n = this.n || 1;
-        const bw = this.finishedH ? width * (this.bw / this.sw) : width / m;
-        const bh = this.finishedV ? height * (this.bh / this.sh) : height / n;
-        const mh = this.finishedH ? width * (this.getFinalValue('mh') / this.sw) : 0;
-        const mv = this.finishedV ? height * (this.getFinalValue('mv') / this.sh) : 0;
-        const ph = this.finishedH ? (this.padding ? width * (this.getFinalValue('ph') / this.sw) : mh) : 0;
-        const pv = this.finishedV ? (this.padding ? height * (this.getFinalValue('pv') / this.sh) : mv) : 0;
-
-        for (let x = 0; x < m; x++) {
-          for (let y = 0; y < n; y++) {
-            ctx.strokeRect(ph + (bw + mh) * x, pv + (bh + mv) * y, bw, bh);
-          }
-        }
       } else {
         this.preview.width = 1;
         this.preview.height = 1;
