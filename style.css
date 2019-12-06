@@ -26,17 +26,26 @@ h1 {
     margin-bottom: .5em;
 }
 
+#table-container {
+    margin: auto;
+    padding: 1em;
+    background-color: #F5F5F5;
+    width: fit-content;
+}
+
 table {
     border-collapse: collapse;
-    margin: auto;
+    margin: 0;
     font-size: .9em;
-    background-color: #F5F5F5;
-    border: 1em solid transparent;
 }
 
 td {
     text-align: center;
     padding: 0.1rem 0.25rem;
+}
+
+tr.focused {
+    background-color: #E0E0E0;
 }
 
 td > * {
@@ -56,20 +65,20 @@ td:nth-child(3), td:nth-child(5) {
     width: 1.8rem;
 }
 
-td:nth-child(6), td[colspan="5"]+td {
+td:nth-child(6), td[colspan="5"] + td {
     padding-left: 1rem;
     text-align: left;
     width: 11rem;
 }
 
-td[colspan="5"]{
+td[colspan="5"] {
     text-align: center;
 }
 
-canvas{
-    display:block;
-    margin:auto;
-    height:20rem;
+canvas {
+    display: block;
+    margin: auto;
+    height: 20rem;
 }
 
 @media only screen and (min-width: 768px) {

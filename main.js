@@ -65,9 +65,10 @@ const data = {
 let app = {
   el: '#app',
   data: {
+    focused: undefined,
     //inputs
     sw: 21, sh: 29.7, //sheet size
-    m: undefined, n: undefined, //boxes
+    m: 1, n: 1, //boxes //TODO undefined
     bw: undefined, bh: undefined, //box size
     rw: undefined, rh: undefined, //box ratio
     mh: undefined, mv: undefined, //margin
@@ -112,6 +113,10 @@ let app = {
     pv: 'refreshValues',
   },
   methods: {
+    setFocus: function (name) {
+      this.focused = name;
+      this.redraw();
+    },
     refreshValues: function () {
       const self = this;
       this.finishedH = false;
@@ -119,6 +124,11 @@ let app = {
       this.incomplete = false;
       this.fbw = false;
       this.fbh = false;
+      ['sw', 'sh', 'm', 'n', 'bw', 'bh', 'rw', 'rh', 'mh', 'mv', 'ph', 'pv'].forEach(name => {
+        if (self[name]) {
+          Vue.set(self, name, parseFloat(self[name]));
+        }
+      });
       if (!this.sw || !this.sh || !this.m || !this.n) {
         this.incomplete = true;
       } else {
@@ -137,26 +147,26 @@ let app = {
           if (uh <= 1) {
             this.finishedH = true;
             if (!this.bw) setTimeout(() => {
-              self.finalValue('bw', (this.sw - this.ph * 2 - this.mh * (this.m - 1)) / this.m);
+              self.setFinalValue('bw', (this.sw - this.ph * 2 - this.mh * (this.m - 1)) / this.m);
             });
             else if (!this.mh) setTimeout(() => {
-              self.finalValue('mh', (this.sw - this.ph * 2 - this.bw * this.m) / (this.m - 1));
+              self.setFinalValue('mh', (this.sw - this.ph * 2 - this.bw * this.m) / (this.m - 1));
             });
             else if (!this.ph) setTimeout(() => {
-              self.finalValue('ph', (this.sw - this.mh * (this.m - 1) - this.bw * this.m) / 2);
+              self.setFinalValue('ph', (this.sw - this.mh * (this.m - 1) - this.bw * this.m) / 2);
             });
           }
           const uv = !this.bh + !this.mv + !this.pv;
           if (uv <= 1) {
             this.finishedV = true;
             if (!this.bh) setTimeout(() => {
-              self.finalValue('bh', (this.sh - this.pv * 2 - this.mv * (this.n - 1)) / this.n);
+              self.setFinalValue('bh', (this.sh - this.pv * 2 - this.mv * (this.n - 1)) / this.n);
             });
             else if (!this.mv) setTimeout(() => {
-              self.finalValue('mv', (this.sw - this.pv * 2 - this.bh * this.n) / (this.n - 1));
+              self.setFinalValue('mv', (this.sh - this.pv * 2 - this.bh * this.n) / (this.n - 1));
             });
             else if (!this.pv) setTimeout(() => {
-              self.finalValue('pv', (this.sw - this.mv * (this.m - 1) - this.bh * this.n) / 2);
+              self.setFinalValue('pv', (this.sh - this.mv * (this.m - 1) - this.bh * this.n) / 2);
             });
           }
         } else {
@@ -164,30 +174,32 @@ let app = {
           if (uh <= 1) {
             this.finishedH = true;
             if (!this.bw) setTimeout(() => {
-              self.finalValue('bw', (this.sw - this.mh * (this.m + 1)) / this.m);
+              self.setFinalValue('bw', (this.sw - this.mh * (this.m + 1)) / this.m);
             });
             else if (!this.mh) setTimeout(() => {
-              self.finalValue('mh', (this.sw - this.bw * this.m) / (this.m + 1));
+              self.setFinalValue('mh', (this.sw - this.bw * this.m) / (this.m + 1));
             });
           }
           const uv = !this.bh + !this.mv;
           if (uv <= 1) {
             this.finishedV = true;
             if (!this.bh) setTimeout(() => {
-              self.finalValue('bh', (this.sh - this.mv * (this.n + 1)) / this.n);
+              self.setFinalValue('bh', (this.sh - this.mv * (this.n + 1)) / this.n);
             });
             else if (!this.mv) setTimeout(() => {
-              self.finalValue('mv', (this.sw - this.bh * this.n) / (this.n + 1));
+              self.setFinalValue('mv', (this.sh - this.bh * this.n) / (this.n + 1));
             });
           }
         }
       }
-      this.redraw();
+      setTimeout(this.redraw);
     },
-    finalValue: function (n, v) {
+    setFinalValue: function (n, v) {
       v = utils.round(v, 2);
-      console.log(n, v);
       document.getElementById(n).value = v;
+    },
+    getFinalValue: function (n) {
+      return parseFloat(document.getElementById(n).value);
     },
     'reset': function () {
       const self = this;
@@ -210,11 +222,42 @@ let app = {
         this.preview.style.height = `${height}px`;
 
         const ctx = this.preview.getContext('2d');
-        ctx.clearRect(0,0, width, height);
+        ctx.clearRect(0, 0, width, height);
 
         ctx.lineWidth = 4;
+        ctx.strokeStyle = (this.focused === 'sw' || this.focused === 'sheet') ? '#c62828' : '#424242';
+        ctx.beginPath();
+        ctx.moveTo(1, 1);
+        ctx.lineTo(width - 2, 1);
+        ctx.moveTo(1, height - 2);
+        ctx.lineTo(width - 2, height - 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = (this.focused === 'sh' || this.focused === 'sheet') ? '#c62828' : '#424242';
+        ctx.beginPath();
+        ctx.moveTo(1, 1);
+        ctx.lineTo(1, height - 2);
+        ctx.moveTo(width - 2, 1);
+        ctx.lineTo(width - 2, height - 2);
+        ctx.stroke();
+
+        ctx.lineWidth = 2;
         ctx.strokeStyle = '#424242';
-        ctx.strokeRect(0, 0, width, height);
+
+        const m = this.m || 1;
+        const n = this.n || 1;
+        const bw = this.finishedH ? width * (this.bw / this.sw) : width / m;
+        const bh = this.finishedV ? height * (this.bh / this.sh) : height / n;
+        const mh = this.finishedH ? width * (this.getFinalValue('mh') / this.sw) : 0;
+        const mv = this.finishedV ? height * (this.getFinalValue('mv') / this.sh) : 0;
+        const ph = this.finishedH ? (this.padding ? width * (this.getFinalValue('ph') / this.sw) : mh) : 0;
+        const pv = this.finishedV ? (this.padding ? height * (this.getFinalValue('pv') / this.sh) : mv) : 0;
+
+        for (let x = 0; x < m; x++) {
+          for (let y = 0; y < n; y++) {
+            ctx.strokeRect(ph + (bw + mh) * x, pv + (bh + mv) * y, bw, bh);
+          }
+        }
       } else {
         this.preview.width = 1;
         this.preview.height = 1;
@@ -236,7 +279,6 @@ let app = {
         w: s.h, h: s.w
       });
     });
-    console.log('app mounted');
     setTimeout(() => {
       self.$el.setAttribute('style', '');
       self.previewMaxHeight = this.preview.getBoundingClientRect().height;
