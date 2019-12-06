@@ -1,8 +1,9 @@
 <!DOCTYPE html>
+<!--suppress XmlUnboundNsPrefix -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Change this you moron</title>
+    <title>Sheet Divider</title>
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="lib/vue.min.js"></script>
     <script type="text/javascript" src="main.js"></script>
@@ -21,9 +22,61 @@
 </head>
 <body>
     <main id="app" style="display:none">
-        <h1>{{title}}</h1>
+        <h1>Sheet Divider</h1>
         <br>
-        <p v-html="content"></p>
+        <table id="inputs">
+            <tr>
+                <td>Sheet Size:</td>
+                <td><input v-model="sw" v-bind:disabled="sheet>0" type="number" min="1"></td>
+                <td>×</td>
+                <td><input v-model="sh" v-bind:disabled="sheet>0" type="number" min="1"></td>
+                <td><small>cm</small></td>
+                <td>
+                    <select v-model="sheet">
+                        <option v-bind:value="i" v-for="s,i in sheets">{{s.title}}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Boxes:</td>
+                <td><input v-model="m" type="number" min="1"></td>
+                <td>×</td>
+                <td><input v-model="n" type="number" min="1"></td>
+            </tr>
+            <tr>
+                <td>Box size:</td>
+                <td><input id="bw" v-model="bw" v-bind:disabled="(finishedH && !bw) || fbw" type="number" min="0.1"></td>
+                <td>×</td>
+                <td><input id="bh" v-model="bh" v-bind:disabled="(finishedV && !bh) || fbh" type="number" min="0.1"></td>
+                <td><small>cm</small></td>
+                <td><span><input v-model="ratio" type="checkbox">Use ratio</span></td>
+            </tr>
+            <tr v-if="ratio">
+                <td>Box ratio:</td>
+                <td><input v-model="rw" type="number" min="0.1" step="0.1"></td>
+                <td>/</td>
+                <td><input v-model="rh" type="number" min="0.1" step="0.1"></td>
+            </tr>
+            <tr>
+                <td>Box margin:</td>
+                <td><input id="mh" v-model="mh" v-bind:disabled="finishedH && !mh" type="number" min="0.1" step="0.1"></td>
+                <td><small>cm</small></td>
+                <td><input id="mv" v-model="mv" v-bind:disabled="finishedV && !mv" type="number" min="0.1" step="0.1"></td>
+                <td><small>cm</small></td>
+                <td><span><input v-model="padding" type="checkbox">Sheet padding</span></td>
+            </tr>
+            <tr v-if="padding">
+                <td>Sheet padding:</td>
+                <td><input id="ph" v-model="ph" v-bind:disabled="finishedH && !ph" type="number" min="0.1"></td>
+                <td><small>cm</small></td>
+                <td><input id="pv" v-model="pv" v-bind:disabled="finishedV && !pv" type="number" min="0.1"></td>
+                <td><small>cm</small></td>
+            </tr>
+            <tr>
+                <td colspan="5" style="text-align: center"><small>(All sizes in centimeters)</small></td>
+                <td><button v-on:click="reset">Reset</button></td>
+            </tr>
+        </table>
         <br>
         <small><a href="https://twitter.com/_klemek" target="_blank">@Klemek</a> - <a href="" target="_blank">Github Repository</a> - 2019</small>
     </main>
