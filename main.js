@@ -58,6 +58,21 @@ const data = {
     {title: 'Double-Raisin', w: 65, h: 100},
     {title: 'Raisin', w: 50, h: 65},
     {title: 'Demi-Raisin', w: 32.5, h: 50},
+  ],
+  ratios: [
+    {rw:1, rh:1},
+    {rw:2, rh:1},
+    {rw:1, rh:2},
+    {rw:3, rh:2},
+    {rw:2, rh:3},
+    {rw:4, rh:3},
+    {rw:3, rh:4},
+    {rw:4, rh:5},
+    {rw:5, rh:7},
+    {rw:16, rh:9},
+    {rw:9, rh:16},
+    {rw:21, rh:9},
+    {rw:9, rh:21},
   ]
 };
 
@@ -74,20 +89,32 @@ let app = {
     mh: undefined, mv: undefined, //margin
     ph: undefined, pv: undefined, //padding
     sheet: 5,
+    sheets: [
+      {title: 'Custom'}
+    ],
     ratio: false,
+    ratioId: 0,
+    ratios: [
+      {title: 'Custom'}
+    ],
     padding: false,
     incomplete: false,
     finishedH: false, finishedV: false, //finished h
     fbw: false, fbh: false, //forced width or height
-    sheets: [
-      {title: 'Custom'}
-    ]
+
   },
   watch: {
     sheet: function (v) {
       if (v > 0) {
         this.sw = this.sheets[v].w;
         this.sh = this.sheets[v].h;
+      }
+      this.refreshValues();
+    },
+    ratioId: function (v) {
+      if (v > 0) {
+        this.rw = this.ratios[v].rw;
+        this.rh = this.ratios[v].rh;
       }
       this.refreshValues();
     },
@@ -254,7 +281,7 @@ let app = {
         for (let x = 0; x < m + 1; x++) {
           for (let y = 0; y < n + 1; y++) {
             ctx.strokeStyle = '#c62828';
-            if (this.focused === 'rw' || this.focused === 'rh') {
+            if (this.focused === 'rw' || this.focused === 'rh' || this.focused === 'ratio') {
               ctx.beginPath();
               ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y);
               ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y + bh);
@@ -328,6 +355,13 @@ let app = {
       self.sheets.push({
         title: `${s.title} landscape (${s.h}×${s.w}cm)`,
         w: s.h, h: s.w
+      });
+    });
+    data.ratios.forEach(r => {
+      self.ratios.push({
+        title: `${r.rw}:${r.rh}`,
+        rw: r.rw,
+        rh: r.rh
       });
     });
     setTimeout(() => {

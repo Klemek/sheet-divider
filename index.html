@@ -52,13 +52,17 @@
                 <td><small>cm</small></td>
                 <td><span><input v-model="ratio" type="checkbox">Use ratio</span></td>
             </tr>
-            <tr v-bind:class="{focused: focused=='rw'||focused=='rh'}" v-if="ratio && !incomplete">
+            <tr v-bind:class="{focused: focused=='rw'||focused=='rh'||focused==='ratio'}" v-if="ratio && !incomplete">
                 <td>Box ratio:</td>
-                <td><input @focus="setFocus('rw')" v-model="rw" type="number" min="0.1" step="0.1"></td>
-                <td>/</td>
-                <td><input @focus="setFocus('rh')" v-model="rh" type="number" min="0.1" step="0.1"></td>
+                <td><input @focus="setFocus('rw')" v-model="rw" v-bind:disabled="ratioId>0" type="number" min="0.1" step="0.1"></td>
+                <td>:</td>
+                <td><input @focus="setFocus('rh')" v-model="rh" v-bind:disabled="ratioId>0" type="number" min="0.1" step="0.1"></td>
                 <td></td>
-                <td></td>
+                <td>
+                    <select v-model="ratioId" @focus="setFocus('ratio')" @blur="resetFocus()">
+                        <option v-bind:value="i" v-for="r,i in ratios">{{r.title}}</option>
+                    </select>
+                </td>
             </tr>
             <tr v-bind:class="{focused: focused=='mh'||focused=='mv'}" v-if="!incomplete">
                 <td>Box margin:</td>
