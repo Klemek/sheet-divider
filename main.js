@@ -60,19 +60,19 @@ const data = {
     {title: 'Demi-Raisin', w: 32.5, h: 50},
   ],
   ratios: [
-    {rw:1, rh:1},
-    {rw:2, rh:1},
-    {rw:1, rh:2},
-    {rw:3, rh:2},
-    {rw:2, rh:3},
-    {rw:4, rh:3},
-    {rw:3, rh:4},
-    {rw:4, rh:5},
-    {rw:5, rh:7},
-    {rw:16, rh:9},
-    {rw:9, rh:16},
-    {rw:21, rh:9},
-    {rw:9, rh:21},
+    {rw: 1, rh: 1},
+    {rw: 2, rh: 1},
+    {rw: 1, rh: 2},
+    {rw: 3, rh: 2},
+    {rw: 2, rh: 3},
+    {rw: 4, rh: 3},
+    {rw: 3, rh: 4},
+    {rw: 4, rh: 5},
+    {rw: 5, rh: 7},
+    {rw: 16, rh: 9},
+    {rw: 9, rh: 16},
+    {rw: 21, rh: 9},
+    {rw: 9, rh: 21},
   ]
 };
 
@@ -82,13 +82,13 @@ let app = {
   data: {
     focused: undefined,
     //inputs
-    sw: 21, sh: 29.7, //sheet size
+    sw: undefined, sh: undefined, //sheet size
     m: undefined, n: undefined, //boxes
     bw: undefined, bh: undefined, //box size
     rw: undefined, rh: undefined, //box ratio
     mh: undefined, mv: undefined, //margin
     ph: undefined, pv: undefined, //padding
-    sheet: 5,
+    sheet: 0,
     sheets: [
       {title: 'Custom'}
     ],
@@ -118,6 +118,13 @@ let app = {
       }
       this.refreshValues();
     },
+    ratio: function (v) {
+      if (!v && this.fbw)
+        this.bw = utils.round(this.bw, 1);
+      if (!v && this.fbh)
+        this.bh = utils.round(this.bh, 1);
+      this.refreshValues();
+    },
     padding: function (v) {
       if (!v && this.bw && this.mh)
         this.mh = undefined;
@@ -125,7 +132,6 @@ let app = {
         this.mv = undefined;
       this.refreshValues();
     },
-    ratio: 'refreshValues',
     sw: 'refreshValues',
     sh: 'refreshValues',
     m: 'refreshValues',
@@ -162,22 +168,18 @@ let app = {
         this.incomplete = true;
       } else {
         if (this.ratio && this.rw && this.rh) {
-          if (!this.fbw && !this.fbh) {
-            if (this.bh) {
-              this.fbw = true;
-              this.bw = utils.round(this.bh * this.rw / this.rh, 2);
-            } else if (this.bw) {
-              this.fbh = true;
-              this.bh = utils.round(this.bw * this.rh / this.rw, 2);
-            }
-          } else {
-            if (this.fbw && !this.bh) {
-              this.fbw = false;
-              this.bw = undefined;
-            } else if (this.fbh && !this.bw) {
-              this.fbh = false;
-              this.bh = undefined;
-            }
+          if (this.fbw && !this.bh) {
+            this.fbw = false;
+            this.bw = undefined;
+          } else if (this.fbh && !this.bw) {
+            this.fbh = false;
+            this.bh = undefined;
+          } else if (!this.fbw && this.bw) {
+            this.fbh = true;
+            this.bh = utils.round(this.bw * this.rh / this.rw, 2);
+          } else if (!this.fbh && this.bh) {
+            this.fbw = true;
+            this.bw = utils.round(this.bh * this.rw / this.rh, 2);
           }
         } else {
           this.fbw = false;

@@ -24,9 +24,11 @@
             <tr></tr>
             <tr v-bind:class="{focused: focused=='sw'||focused=='sh'||focused=='sheet'}">
                 <td>Sheet Size:</td>
-                <td><input @focus="setFocus('sw')" @blur="resetFocus()" v-model="sw" v-bind:disabled="sheet>0" type="number" min="1" step="0.1"></td>
+                <td><input @focus="setFocus('sw')" @blur="resetFocus()" v-model="sw" v-bind:disabled="sheet>0"
+                           type="number" min="1" step="0.1"></td>
                 <td>×</td>
-                <td><input @focus="setFocus('sh')" @blur="resetFocus()" v-model="sh" v-bind:disabled="sheet>0" type="number" min="1" step="0.1"></td>
+                <td><input @focus="setFocus('sh')" @blur="resetFocus()" v-model="sh" v-bind:disabled="sheet>0"
+                           type="number" min="1" step="0.1"></td>
                 <td><small>cm</small></td>
                 <td>
                     <select v-model="sheet" @focus="setFocus('sheet')" @blur="resetFocus()">
@@ -44,19 +46,23 @@
             </tr>
             <tr v-bind:class="{focused: focused=='bw'||focused=='bh'}" v-if="!incomplete">
                 <td>Box size:</td>
-                <td><input @focus="setFocus('bw')" @blur="resetFocus()" id="bw" v-model="bw" v-bind:disabled="(finishedH && !bw) || fbw"
+                <td><input @focus="setFocus('bw')" @blur="resetFocus()" id="bw" v-model="bw"
+                           v-bind:disabled="(finishedH && !bw) || fbw"
                            type="number" min="0.1" step="0.1"></td>
                 <td>×</td>
-                <td><input @focus="setFocus('bh')" @blur="resetFocus()" id="bh" v-model="bh" v-bind:disabled="(finishedV && !bh) || fbh"
+                <td><input @focus="setFocus('bh')" @blur="resetFocus()" id="bh" v-model="bh"
+                           v-bind:disabled="(finishedV && !bh) || fbh"
                            type="number" min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
                 <td><span><input v-model="ratio" type="checkbox">Use ratio</span></td>
             </tr>
             <tr v-bind:class="{focused: focused=='rw'||focused=='rh'||focused==='ratio'}" v-if="ratio && !incomplete">
                 <td>Box ratio:</td>
-                <td><input @focus="setFocus('rw')" v-model="rw" v-bind:disabled="ratioId>0" type="number" min="0.1" step="0.1"></td>
+                <td><input @focus="setFocus('rw')" v-model="rw" v-bind:disabled="ratioId>0" type="number" min="1"
+                           step="1"></td>
                 <td>:</td>
-                <td><input @focus="setFocus('rh')" v-model="rh" v-bind:disabled="ratioId>0" type="number" min="0.1" step="0.1"></td>
+                <td><input @focus="setFocus('rh')" v-model="rh" v-bind:disabled="ratioId>0" type="number" min="1"
+                           step="1"></td>
                 <td></td>
                 <td>
                     <select v-model="ratioId" @focus="setFocus('ratio')" @blur="resetFocus()">
@@ -66,20 +72,24 @@
             </tr>
             <tr v-bind:class="{focused: focused=='mh'||focused=='mv'}" v-if="!incomplete">
                 <td>Box margin:</td>
-                <td><input @focus="setFocus('mh')" @blur="resetFocus()" id="mh" v-model="mh" v-bind:disabled="finishedH && !mh" type="number"
+                <td><input @focus="setFocus('mh')" @blur="resetFocus()" id="mh" v-model="mh"
+                           v-bind:disabled="finishedH && !mh" type="number"
                            min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
-                <td><input @focus="setFocus('mv')" @blur="resetFocus()" id="mv" v-model="mv" v-bind:disabled="finishedV && !mv" type="number"
+                <td><input @focus="setFocus('mv')" @blur="resetFocus()" id="mv" v-model="mv"
+                           v-bind:disabled="finishedV && !mv" type="number"
                            min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
                 <td><span><input v-model="padding" type="checkbox">Sheet padding</span></td>
             </tr>
             <tr v-bind:class="{focused: focused=='ph'||focused=='pv'}" v-if="padding && !incomplete">
                 <td>Sheet padding:</td>
-                <td><input @focus="setFocus('ph')" @blur="resetFocus()" id="ph" v-model="ph" v-bind:disabled="finishedH && !ph" type="number"
+                <td><input @focus="setFocus('ph')" @blur="resetFocus()" id="ph" v-model="ph"
+                           v-bind:disabled="finishedH && !ph" type="number"
                            min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
-                <td><input @focus="setFocus('pv')" @blur="resetFocus()" id="pv" v-model="pv" v-bind:disabled="finishedV && !pv" type="number"
+                <td><input @focus="setFocus('pv')" @blur="resetFocus()" id="pv" v-model="pv"
+                           v-bind:disabled="finishedV && !pv" type="number"
                            min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
                 <td></td>
@@ -96,7 +106,8 @@
     <br>
     <canvas id="preview"></canvas>
     <br>
-    <small><a href="https://twitter.com/_klemek" target="_blank">@Klemek</a> - <a href="https://github.com/klemek/sheet-divider" target="_blank">Github
+    <small><a href="https://twitter.com/_klemek" target="_blank">@Klemek</a> - <a
+            href="https://github.com/klemek/sheet-divider" target="_blank">Github
         Repository</a> - 2019</small>
 </main>
 </body>
