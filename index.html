@@ -22,7 +22,7 @@
     <div id="table-container">
         <table id="inputs">
             <tr></tr>
-            <tr v-bind:class="{focused: focused=='sw'||focused=='sh'||focused=='sheet'}">
+            <tr v-bind:class="{focused: isFocused('sw','sh','sheet')}">
                 <td>Sheet Size:</td>
                 <td><input @focus="setFocus('sw')" @blur="resetFocus()" v-model="sw" v-bind:disabled="sheet>0"
                            type="number" min="1" step="0.1"></td>
@@ -36,7 +36,7 @@
                     </select>
                 </td>
             </tr>
-            <tr v-bind:class="{focused: focused=='m'||focused=='n'}">
+            <tr v-bind:class="{focused: isFocused('m','n')}">
                 <td>Boxes:</td>
                 <td><input @focus="setFocus('m')" @blur="resetFocus()" v-model="m" type="number" min="1" step="1"></td>
                 <td>×</td>
@@ -44,7 +44,7 @@
                 <td></td>
                 <td></td>
             </tr>
-            <tr v-bind:class="{focused: focused=='bw'||focused=='bh'}" v-if="!incomplete">
+            <tr v-bind:class="{focused: isFocused('bw','bh')}" v-if="!incomplete">
                 <td>Box size:</td>
                 <td><input @focus="setFocus('bw')" @blur="resetFocus()" id="bw" v-model="bw"
                            v-bind:disabled="(finishedH && !bw) || fbw"
@@ -56,7 +56,7 @@
                 <td><small>cm</small></td>
                 <td><span><input v-model="ratio" type="checkbox">Use ratio</span></td>
             </tr>
-            <tr v-bind:class="{focused: focused=='rw'||focused=='rh'||focused==='ratio'}" v-if="ratio && !incomplete">
+            <tr v-bind:class="{focused: isFocused('rw','rh','ratio')}" v-if="ratio && !incomplete">
                 <td>Box ratio:</td>
                 <td><input @focus="setFocus('rw')" v-model="rw" v-bind:disabled="ratioId>0" type="number" min="1"
                            step="1"></td>
@@ -70,7 +70,7 @@
                     </select>
                 </td>
             </tr>
-            <tr v-bind:class="{focused: focused=='mh'||focused=='mv'}" v-if="!incomplete">
+            <tr v-bind:class="{focused: isFocused('mh','mv')}" v-if="!incomplete">
                 <td>Box margin:</td>
                 <td><input @focus="setFocus('mh')" @blur="resetFocus()" id="mh" v-model="mh"
                            v-bind:disabled="finishedH && !mh" type="number"
@@ -82,7 +82,7 @@
                 <td><small>cm</small></td>
                 <td><span><input v-model="padding" type="checkbox">Sheet padding</span></td>
             </tr>
-            <tr v-bind:class="{focused: focused=='ph'||focused=='pv'}" v-if="padding && !incomplete">
+            <tr v-bind:class="{focused: isFocused('ph','pv')}" v-if="padding && !incomplete">
                 <td>Sheet padding:</td>
                 <td><input @focus="setFocus('ph')" @blur="resetFocus()" id="ph" v-model="ph"
                            v-bind:disabled="finishedH && !ph" type="number"

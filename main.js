@@ -46,7 +46,11 @@ const utils = {
   }
 };
 
-const data = {
+const constants = {
+  colors:{
+    red:'#c62828',
+    black:'#424242'
+  },
   papers: [
     {title: 'A0', w: 84.1, h: 118.9},
     {title: 'A1', w: 59.4, h: 84.1},
@@ -75,7 +79,6 @@ const data = {
     {rw: 9, rh: 21},
   ]
 };
-
 
 let app = {
   el: '#app',
@@ -153,6 +156,9 @@ let app = {
     'setFocus': function (name) {
       this.focused = name;
       this.refreshValues();
+    },
+    isFocused: function(...names){
+      return names.includes(this.focused);
     },
     refreshValues: function () {
       const self = this;
@@ -252,6 +258,8 @@ let app = {
     },
     redraw: function () {
       if (this.sw && this.sh) {
+        const red = constants.colors.red;
+        const black = constants.colors.black;
         const maxWidth = 0.8 * this.$el.getBoundingClientRect().width;
         let height = this.previewMaxHeight;
         let width = height * this.sw / this.sh;
@@ -282,20 +290,20 @@ let app = {
 
         for (let x = 0; x < m + 1; x++) {
           for (let y = 0; y < n + 1; y++) {
-            ctx.strokeStyle = '#c62828';
-            if (this.focused === 'rw' || this.focused === 'rh' || this.focused === 'ratio') {
+            ctx.strokeStyle = red;
+            if (this.isFocused('rw','rh','ratio')) {
               ctx.beginPath();
               ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y);
               ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y + bh);
               ctx.stroke();
             }
-            if (this.focused === 'ph' && (x === 0 || x === m) || this.focused === 'mh' && (!(x === 0 || x === m) || !this.padding)) {
+            if (this.isFocused('ph') && (x === 0 || x === m) || this.isFocused('mh') && (!(x === 0 || x === m) || !this.padding)) {
               ctx.beginPath();
               ctx.moveTo(ph + (bw + mh) * (x - 1) + bw, pv + (bh + mv) * y + bh / 2);
               ctx.lineTo(ph + (bw + mh) * x, pv + (bh + mv) * y + bh / 2);
               ctx.stroke();
             }
-            if (this.focused === 'pv' && (y === 0 || y === n) || this.focused === 'mv' && (!(y === 0 || y === n) || !this.padding)) {
+            if (this.isFocused('pv') && (y === 0 || y === n) || this.isFocused('mv') && (!(y === 0 || y === n) || !this.padding)) {
               ctx.beginPath();
               ctx.moveTo(ph + (bw + mh) * x + bw / 2, pv + (bh + mv) * (y - 1) + bh);
               ctx.lineTo(ph + (bw + mh) * x + bw / 2, pv + (bh + mv) * y);
@@ -303,7 +311,7 @@ let app = {
             }
 
             if (x < m && y < n) {
-              ctx.strokeStyle = (this.focused === 'bw' || this.focused === 'm' || this.focused === 'n') ? '#c62828' : '#424242';
+              ctx.strokeStyle = this.isFocused('bw','m','n') ? red : black;
               ctx.beginPath();
               ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y);
               ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y);
@@ -311,7 +319,7 @@ let app = {
               ctx.lineTo(ph + (bw + mh) * x + bw, pv + (bh + mv) * y + bh);
               ctx.stroke();
 
-              ctx.strokeStyle = (this.focused === 'bh' || this.focused === 'm' || this.focused === 'n') ? '#c62828' : '#424242';
+              ctx.strokeStyle = this.isFocused('bh','m','n') ? red : black;
               ctx.beginPath();
               ctx.moveTo(ph + (bw + mh) * x, pv + (bh + mv) * y);
               ctx.lineTo(ph + (bw + mh) * x, pv + (bh + mv) * y + bh);
@@ -323,7 +331,7 @@ let app = {
         }
 
         ctx.lineWidth = 4;
-        ctx.strokeStyle = (this.focused === 'sw' || this.focused === 'sheet') ? '#c62828' : '#424242';
+        ctx.strokeStyle = this.isFocused('sw','sheet') ? red : black;
         ctx.beginPath();
         ctx.moveTo(1, 1);
         ctx.lineTo(width - 2, 1);
@@ -331,7 +339,7 @@ let app = {
         ctx.lineTo(width - 2, height - 2);
         ctx.stroke();
 
-        ctx.strokeStyle = (this.focused === 'sh' || this.focused === 'sheet') ? '#c62828' : '#424242';
+        ctx.strokeStyle = this.isFocused('sh','sheet') ? red : black;
         ctx.beginPath();
         ctx.moveTo(1, 1);
         ctx.lineTo(1, height - 2);
@@ -347,19 +355,19 @@ let app = {
   'mounted': function () {
     const self = this;
     this.preview = document.getElementById('preview');
-    data.papers.forEach(s => {
+    constants.papers.forEach(s => {
       self.sheets.push({
         title: `${s.title} (${s.w}×${s.h}cm)`,
         w: s.w, h: s.h
       });
     });
-    data.papers.forEach(s => {
+    constants.papers.forEach(s => {
       self.sheets.push({
         title: `${s.title} landscape (${s.h}×${s.w}cm)`,
         w: s.h, h: s.w
       });
     });
-    data.ratios.forEach(r => {
+    constants.ratios.forEach(r => {
       self.ratios.push({
         title: `${r.rw}:${r.rh}`,
         rw: r.rw,
