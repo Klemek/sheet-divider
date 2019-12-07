@@ -75,10 +75,15 @@ td[colspan="5"] {
     text-align: center;
 }
 
+#canvas-container{
+    height:20rem;
+    width:100%;
+}
+
 canvas {
     display: block;
     margin: auto;
-    height: 20rem;
+    height: 100%;
 }
 
 @media only screen and (min-width: 768px) {
