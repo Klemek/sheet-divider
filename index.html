@@ -36,19 +36,19 @@
             </tr>
             <tr v-bind:class="{focused: focused=='m'||focused=='n'}">
                 <td>Boxes:</td>
-                <td><input @focus="setFocus('m')" @blur="resetFocus()" v-model="m" type="number" min="1"></td>
+                <td><input @focus="setFocus('m')" @blur="resetFocus()" v-model="m" type="number" min="1" step="1"></td>
                 <td>×</td>
-                <td><input @focus="setFocus('n')" @blur="resetFocus()" v-model="n" type="number" min="1"></td>
+                <td><input @focus="setFocus('n')" @blur="resetFocus()" v-model="n" type="number" min="1" step="1"></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr v-bind:class="{focused: focused=='bw'||focused=='bh'}" v-if="!incomplete">
                 <td>Box size:</td>
                 <td><input @focus="setFocus('bw')" @blur="resetFocus()" id="bw" v-model="bw" v-bind:disabled="(finishedH && !bw) || fbw"
-                           type="number" min="0.1"></td>
+                           type="number" min="0.1" step="0.1"></td>
                 <td>×</td>
                 <td><input @focus="setFocus('bh')" @blur="resetFocus()" id="bh" v-model="bh" v-bind:disabled="(finishedV && !bh) || fbh"
-                           type="number" min="0.1"></td>
+                           type="number" min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
                 <td><span><input v-model="ratio" type="checkbox">Use ratio</span></td>
             </tr>
@@ -77,10 +77,10 @@
             <tr v-bind:class="{focused: focused=='ph'||focused=='pv'}" v-if="padding && !incomplete">
                 <td>Sheet padding:</td>
                 <td><input @focus="setFocus('ph')" @blur="resetFocus()" id="ph" v-model="ph" v-bind:disabled="finishedH && !ph" type="number"
-                           min="0.1"></td>
+                           min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
                 <td><input @focus="setFocus('pv')" @blur="resetFocus()" id="pv" v-model="pv" v-bind:disabled="finishedV && !pv" type="number"
-                           min="0.1"></td>
+                           min="0.1" step="0.1"></td>
                 <td><small>cm</small></td>
                 <td></td>
                 <td></td>
